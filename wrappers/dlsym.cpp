@@ -91,7 +91,7 @@ dlsym(void * handle, const char * symbol)
 extern void * _libGlHandle;
 
 
-
+/*Enum the LIB*/
 enum LibClass {
     LIB_UNKNOWN = 0,
     LIB_GL,
@@ -100,12 +100,20 @@ enum LibClass {
     LIB_GLES2,
 };
 
-
+/*Classify the Library*/
 inline LibClass
 classifyLibrary(const char *pathname)
 {
+		/*
+		 *std::unique_ptr
+		 *http://en.cppreference.com/w/cpp/memory/unique_ptr
+		 */
     std::unique_ptr<char, decltype(free) *> dupname { strdup(pathname), free };
 
+		/*
+		 *cout<<basename("/usr/lib/libGL.so")
+		 *=>libGL.so
+		 */
     char *filename = basename(dupname.get());
     assert(filename);
 
@@ -157,7 +165,15 @@ void * dlopen(const char *filename, int flag)
         return _dlopen(filename, flag);
     }
 
+		/*
+		 *Determine which lib we want to load in
+		 *LibClass would be the enum library
+		 */
     LibClass libClass = classifyLibrary(filename);
+
+		/*
+		 *Redirect: intercept the lib function
+		 */
     bool intercept = libClass != LIB_UNKNOWN;
 
     if (intercept) {
@@ -195,9 +211,13 @@ void * dlopen(const char *filename, int flag)
 
 #endif
 
+		/*
+		 *Dynamic library Open()
+		 *TODO: ? flag 
+		 */
     handle = _dlopen(filename, flag);
     if (!handle) {
-        return handle;
+        return handle;//return NULL
     }
 
     if (intercept) {
