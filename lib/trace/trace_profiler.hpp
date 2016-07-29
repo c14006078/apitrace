@@ -30,6 +30,8 @@
 #include <vector>
 #include <stdint.h>
 
+/*TODO: trace profiler CPU, GPU ...*/
+
 namespace trace
 {
 
