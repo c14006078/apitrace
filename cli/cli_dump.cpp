@@ -213,7 +213,7 @@ command(int argc, char *argv[])
         color = COLOR_OPTION_ALWAYS;
 #else
         color = isatty(STDOUT_FILENO) ? COLOR_OPTION_ALWAYS : COLOR_OPTION_NEVER;
-        pipepager();
+       //pipepager();///< disable the pager option, then we dump all result at once, so do the binary file.
 #endif
     }
 
